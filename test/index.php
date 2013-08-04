@@ -85,7 +85,9 @@ while ($i <= $filesCount) {
 	$file = $filepath . $filename .'-'. $i++ .'.'. $fileExt;
 	$modx->runSnippet('testClearSnippet');
 }
-$logger->log('Отработал чистый сниппет');
+$logger->log($filesCount .' раз отработал <u>чистый сниппет</u>
+	(это для сравнения, сколько modx\'у надо времени и памяти,
+	чтобы просто запустить сниппет, который ничего не делает)');
 
 $installed = $modx->getCount('modSnippet', array('name' => 'phpThumbOf'));
 if ($installed) {
@@ -98,7 +100,7 @@ if ($installed) {
 			,'options' 	=> 'w=500&h=500&zc=1&aoe=0&far=0'
 		));
 	}
-	$logger->log('Отработал phpThumbOf');
+	$logger->log($filesCount .' раз отработал <u>phpThumbOf</u>');
 } else {
 	$logger->log('<b>phpThumbOf не установлен</b>');
 }
@@ -115,7 +117,7 @@ if ($installed) {
 			,'config'	=> '{"path": "/assets/components/phpthumbof/cache_ptoaric/", "salt_type":"md5", "path_at_root": "1", "salt_in": "filename", "salt_separator":"."}'
 		));
 	}
-	$logger->log('Отработал ptoaric');
+	$logger->log($filesCount .' раз отработал <u>ptoaric</u>');
 } else {
 	$logger->log('<b>ptoaric не установлен</b>');
 }
