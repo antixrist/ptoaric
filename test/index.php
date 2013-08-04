@@ -105,6 +105,23 @@ if ($installed) {
 	$logger->log('<b>phpThumbOf не установлен</b>');
 }
 
+$installed = $modx->getCount('modSnippet', array('name' => 'phpThumbOn'));
+if ($installed) {
+	// Запускаем ptoaric
+	$i = 1;
+	while ($i <= $filesCount) {
+		$file = $filepath . $filename .'-'. $i++ .'.'. $fileExt;
+		$modx->runSnippet('phpThumbOn', array(
+			'input' 	=> $file
+			,'options' 	=> 'w=500&h=500&zc=1&aoe=0&far=0'
+			,'config'	=> '{"path": "/assets/components/phpthumbof/cache_ptoaric/", "salt_type":"md5", "path_at_root": "1", "salt_in": "filename", "salt_separator":"."}'
+		));
+	}
+	$logger->log($filesCount .' раз отработал <u>phpThumbOn</u>');
+} else {
+	$logger->log('<b>phpThumbOn не установлен</b>');
+}
+
 $installed = $modx->getCount('modSnippet', array('name' => 'ptoaric'));
 if ($installed) {
 	// Запускаем ptoaric
