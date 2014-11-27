@@ -1,16 +1,32 @@
 <?php
 class logger {
 
-	public $log = '';
+	public $log            = '';
+	public $logFile        = '';
+	public $time_start     = 0;
+	public $time_current   = 0;
+	public $time_last      = 0;
+	public $time_all       = 0;
+	public $memory_start   = 0;
+	public $memory_current = 0;
+	public $memory_last    = 0;
+	public $memory_all     = 0;
 
-	function __construct ($logfile = false) {
-		$this->logfile = $logfile;
 
-		$this->time_last	= $this->time_start		= microtime(true);
-		// $this->memory_last	= $this->memory_start	= memory_get_usage();
+	function __construct () {
+		$this->logReset();
+	}
+
+	function setLogFile ($logFile = '') {
+		$this->logFile = ($logFile) ? $logFile : false;
+	}
+	
+	function logReset () {
+		$this->time_last	= $this->time_start	= microtime(true);
+		$this->memory_last	= $this->memory_start	= memory_get_usage();
 
 		$this->time_all		= 0;
-		// $this->memory_all	= 0;
+		$this->memory_all	= 0;
 	}
 
 	function log($text = '', $metrics = true, $echo = true) {
@@ -20,10 +36,10 @@ class logger {
 			$this->time_current	= $microtime - $this->time_last;
 			$this->time_last	= $microtime;
 
-			// $memory = memory_get_usage();
-			// $this->memory_all		= $memory - $this->memory_start;
-			// $this->memory_current	= $memory - $this->memory_last;
-			// $this->memory_last		= $memory;
+			$memory = memory_get_usage();
+			$this->memory_all	= $memory - $this->memory_start;
+			$this->memory_current	= $memory - $this->memory_last;
+			$this->memory_last	= $memory;
 
 			$text = $this->getFormattedText($text);
 
@@ -40,11 +56,11 @@ class logger {
 
 	function getFormattedText ($text, $metrics = true) {
 		if ($metrics) {
-// 			$text =  '<b>'. $text .'</b>
-// время: '. sprintf('%01.16f', $this->time_current) .' сек. (всего '. sprintf('%01.16f', $this->time_all) .' сек.)
-// память: '. number_format($this->memory_current / 1024, 2,","," ") .' Кб. (всего ' . number_format($this->memory_all / 1024, 2,","," ") .' Кб.)
+			$text =  '<b>'. $text .'</b>
+время: '. sprintf('%01.16f', $this->time_current) .' сек. (всего '. sprintf('%01.16f', $this->time_all) .' сек.)
+память: '. number_format($this->memory_current / 1024, 2,","," ") .' Кб. (всего ' . number_format($this->memory_all / 1024, 2,","," ") .' Кб.)
 
-// ';
+';
 			$text =  '<b>'. $text .'</b>
 время: '. sprintf('%01.16f', $this->time_current) .' сек. (всего '. sprintf('%01.16f', $this->time_all) .' сек.)
 
@@ -59,9 +75,9 @@ class logger {
 	}
 
 	function saveLog () {
-		if (!$this->logfile) return;
 		$result = false;
-		$fp = @fopen($this->logfile, 'w+');
+		if (!$this->logFile) return $result;
+		$fp = @fopen($this->logFile, 'w+');
 		if ($fp) {
 			$result = @fwrite($fp, $this->log);
 			@fclose($fp);
